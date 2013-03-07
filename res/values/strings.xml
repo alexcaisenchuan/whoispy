@@ -17,7 +17,7 @@
     <string name="hint_no_phone">请输入手机号！</string>
     <string name="hint_no_passwd">请输入密码！</string>
     <string name="hint_invalid_phone">手机号非法！</string>
-    <string name="hint_invalid_nickname">昵称长度在3~15之间！（中文算2个字符）</string>
+    <string name="hint_invalid_nickname">昵称长度在3~10之间！</string>
     <string name="hint_invalid_passwd">密码长度在6~32之间！</string>
     <string name="hint_invalid_passwd_confirm">两次输入密码不一致！</string>
     <string name="hint_common_error">未知错误！</string>

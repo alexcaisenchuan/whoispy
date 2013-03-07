@@ -113,7 +113,7 @@ public class ActivityRegister extends Activity{
 		
 		/*读取昵称，校验*/
 		String nickname = edit_nickname.getText().toString();
-		if((nickname.length() < 3) || (nickname.length() > 15))		//昵称长度在3~15之间
+		if((nickname.length() < 3) || (nickname.length() > 10))		//昵称长度在3~10之间
 		{
 			//进行提示
 			Message msg = new Message();

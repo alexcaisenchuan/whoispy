@@ -18,7 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            android:inputType="phone" >
+            android:inputType="phone"
+            android:maxLength="15" >
         </EditText>
     </TableRow>
     
@@ -35,7 +36,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            android:inputType="text" >
+            android:inputType="text" 
+            android:maxLength="10" >
         </EditText>
     </TableRow>
 
@@ -52,7 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            android:inputType="textPassword" >
+            android:inputType="textPassword"
+            android:maxLength="32" >
         </EditText>
     </TableRow>
     
@@ -69,7 +72,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            android:inputType="textPassword" >
+            android:inputType="textPassword"
+            android:maxLength="32" >
         </EditText>
     </TableRow>
     
