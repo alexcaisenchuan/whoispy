@@ -1,4 +1,14 @@
-whoispy（抓鬼游戏）
+whoispy
+
+This is an Android app, which is used to assist the board game - "Find the ghost" (or "Who is spy"). It use network or SMS instead of writing note, to improve the efficiency of the game.(If you have played that game, you know what I mean ^_^)
+
+To use this program, just import it into Eclips, pls use the latest SDK to develop, thanks.
+
+This software is released under Apache Licence 2.0
+
+-------------------------------------------------------------------------------------------
+
+捉鬼游戏（谁是卧底）
 
 这是一个Android应用，主要用于辅助桌游——抓鬼游戏（谁是卧底）的游戏进程，通过联网或短信方式发出词汇，代替写纸条的过程，方便游戏的进行。
 
@@ -14,9 +24,3 @@ trick   打酱油的   傻子
 本项目采用 Apache Licence 2.0 授权协议，欢迎大家在这个基础上进行改进，并与大家分享。
 
 -------------------------------------------------------------------------------------------
-
-This is an Android app, which is used to assist the board game - "Find the ghost" (or "Who is spy"). It use network or SMS instead of writing note, to improve the efficiency of the game.(If you have played that game, you know what I mean ^_^)
-
-To use this program, just import it into Eclips, pls use the latest SDK to develop, thanks.
-
-This software is released under Apache Licence 2.0
