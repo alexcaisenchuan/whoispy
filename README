@@ -1,0 +1,22 @@
+whoispy（抓鬼游戏）
+
+这是一个Android应用，主要用于辅助桌游——抓鬼游戏（谁是卧底）的游戏进程，通过联网或短信方式发出词汇，代替写纸条的过程，方便游戏的进行。
+
+由于历史原因，应用中的变量名都是用了谁是卧底游戏角色的叫法，只有在界面上改成了抓鬼游戏的角色名称，请注意，对应关系如下：
+
+（英文——谁是卧底——抓鬼游戏）
+civil   平民       好人
+spy     卧底       鬼
+trick   打酱油的   傻子
+
+使用时，将此工程导入Eclips即可，请使用最新的SDK环境进行开发。
+
+本项目采用 Apache Licence 2.0 授权协议，欢迎大家在这个基础上进行改进，并与大家分享。
+
+-------------------------------------------------------------------------------------------
+
+This is an Android app, which is used to assist the board game - "Find the ghost" (or "Who is spy"). It use network or SMS instead of writing note, to improve the efficiency of the game.(If you have played that game, you know what I mean ^_^)
+
+To use this program, just import it into Eclips, pls use the latest SDK to develop, thanks.
+
+This software is released under Apache Licence 2.0
