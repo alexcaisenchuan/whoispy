@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    android:padding="30dip" >
+
+   <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center" >
+        
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/main_title"
+	        android:layout_gravity="center"
+	        android:layout_marginTop="20dip"
+	        android:layout_marginBottom="25dip"
+	        android:layout_marginLeft="25dip"
+	        android:layout_marginRight="25dip"
+	        android:textSize="24.5sp" />
+	
+	    <Button 
+	        android:id="@+id/word_display_button"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/word_display_label"
+	        android:textSize="15sp" />
+	    
+	    <Button 
+	        android:id="@+id/word_send_button"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/word_send_label"
+	        android:textSize="15sp" />
+	    
+	    <Button 
+	        android:id="@+id/rule_button"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/rule_label"
+	        android:textSize="15sp" />
+
+	    <Button 
+	        android:id="@+id/about_button"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/about_label"
+	        android:textSize="15sp" />
+	    
+	    <Button 
+	        android:id="@+id/logout_button"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/logout_label"
+	        android:textSize="15sp" />
+
+    </LinearLayout>
+</LinearLayout>

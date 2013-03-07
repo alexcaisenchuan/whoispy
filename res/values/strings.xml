@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- **************************公用提示信息************************** -->
+    <string name="hint_login">登录中…</string>
+    <string name="hint_register">注册中…</string>
+    <string name="hint_read_words">正在读取词汇…</string>
+    <string name="hint_send_words">正在发出词汇…</string>
+    <string name="hint_login_error">未知错误，登录失败！</string>
+    <string name="hint_login_success">登陆成功！</string>
+    <string name="hint_passwd_error">用户名或密码错误！</string>
+    <string name="hint_network_error">网络错误，请检查连接设置！</string>
+    <string name="hint_network_timeout">连接超时，请稍后再试！</string>
+    <string name="hint_phone_exist_error">手机号已注册！</string>
+    <string name="hint_register_success">注册成功！</string>
+    <string name="hint_register_error">未知错误，注册失败！</string>
+    <string name="hint_no_phone">请输入手机号！</string>
+    <string name="hint_no_passwd">请输入密码！</string>
+    <string name="hint_invalid_phone">手机号非法！</string>
+    <string name="hint_invalid_nickname">昵称长度在3~15之间！（中文算2个字符）</string>
+    <string name="hint_invalid_passwd">密码长度在6~32之间！</string>
+    <string name="hint_invalid_passwd_confirm">两次输入密码不一致！</string>
+    <string name="hint_common_error">未知错误！</string>
+    <string name="hint_send_sms">用户不在线，发出短信！</string>
+    <string name="hint_send_word_success">成功发出词汇！</string>
+    
+    <string name="button_ok">确认</string>
+    <string name="button_cancel">取消</string>
+    
+    <!-- **************************Game************************** -->
+    <string name="app_name">捉鬼游戏</string>
+    <string name="menu_settings">Settings</string>
+
+    <!-- **************************Main Activity************************** -->
+    
+    <!-- **************************Login & Register Activity**************************-->
+    <string name="title_login">登录</string>
+    <string name="title_register">注册</string>
+    <string name="text_phone">手机号：</string>
+    <string name="text_nickname">昵称：</string>
+    <string name="text_passwd">密码：</string>
+    <string name="text_passwd_confirm">密码确认：</string>
+    <string name="text_login">登录</string>
+    <string name="text_register">注册</string>
+    <string name="text_register_1">注册新账户</string>
+   
+    <!-- **************************Menu Activity************************** -->
+    <string name="title_menu">菜单</string>
+    <string name="main_title">捉  鬼  游  戏</string>
+    <string name="word_display_label">读取词汇</string>
+    <string name="word_send_label">发出词汇</string>
+    <string name="rule_label">游戏规则</string>
+    <string name="about_label">关于</string>
+    <string name="logout_label">退出登录</string>
+    <!-- 提示字符串 -->
+    <string name="hint_exit">再按一次退出程序!</string>
+    <string name="hint_welcome">欢迎回来，</string>
+    <string name="hint_logout">确认退出登录？</string>
+
+    <!-- **************************Set Player Activity************************** -->
+    <string name="title_set_player">添加玩家</string>
+    <string name="phone_num_text">请输入手机号</string>
+    <string name="phone_book_button">搜索</string>
+
+    <!-- 游戏中提示字符串  -->
+    <string name="hint_phone_num_none">找不到手机号</string>
+    <string name="hint_phone_num_exist">手机号已存在</string>
+    <string name="hint_phone_num_invalid">无效手机号</string>
+    <string name="hint_not_enough_player">玩家太少啦！</string>
+	<!-- 玩家设置  -->
+	<string name="player_setting">玩家设置</string>
+    <string name="delete_player">删除玩家</string>
+    <string name="set_player_shield">暂时不参与游戏</string>
+    <string name="set_player_resume">恢复参与游戏</string>
+    <!-- 其他字符串 -->
+    <string name="player_default_name">玩家</string>
+    <string name="hint_input_player_name">请输入玩家名字:</string>
+    <string name="hint_restart_game">确认重置玩家列表?</string>
+        
+    <!-- **************************Set Role Num Activity************************** -->
+    <string name="title_set_role_num">设置角色个数</string>
+    <string name="text_total_player_num">总人数 : </string>
+    <string name="text_spy_player_num">鬼的个数 : </string>
+    <string name="text_trick_player_num">傻子的个数 : </string>
+    <!-- 游戏中提示字符串  -->
+    <string name="hint_role_num_invalid">人数设置不合理啊！</string>
+    
+    <!-- **************************Set Word Activity************************** -->
+    <string name="title_set_word">设置词汇</string>
+    <string name="text_civil_player_word">好人的词汇 : </string>
+    <string name="text_trick_player_word">傻子的词汇 : </string>
+    <!-- 游戏中提示字符串  -->
+    <string name="hint_word_invalid">请输入有效词汇！</string>
+    <string name="game_check_button">查看游戏</string>
+    <string name="game_start_button">开始游戏</string>
+    
+    <!-- **************************Game View Activity************************** -->
+    <string name="title_game_view">游戏界面</string>
+    <string name="text_round">回合 : </string>
+    <string name="replay_button">再来一局</string>
+    <string name="text_player_list">玩家列表：</string>
+    <string name="role_civil">好人</string>
+    <string name="role_spy">鬼</string>
+    <string name="role_trick">傻子</string>
+    <string name="role_unknown">未知</string>
+    <string name="seting_resend_sms">重新发送词汇</string>
+    <string name="seting_player_mark_out">标记玩家出局</string>
+    <string name="seting_player_mark_resume">标记玩家恢复</string>
+
+    <!-- **************************Word Display Activity************************** -->
+    <string name="title_word_display">词汇列表</string>
+    <string name="text_word_list">收到的词汇：</string>
+    <string name="refresh_button">刷新</string>
+    <string name="clear_word_button">清空词汇</string>
+    <string name="title_del_words">删除所有词汇？</string>
+    
+    <!-- **************************Rule Activity************************** -->
+    <string name="title_rule">游戏规则</string>    
+    
+    <!-- **************************About Activity************************** -->
+    <string name="title_about">关于</string>
+    
+    <!-- **************************Menu Game Setting************************** -->
+    <string name="setting_new_game">开始新游戏</string>
+    
+    <!-- **************************其他************************** -->
+    <string name="string_hint">Hint</string>
+
+</resources>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.alexcai.whoispy"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="10" />
+
+    <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission> 
+    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission> 
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <application
+        android:name="com.alexcai.whoispy.AppGameInfos"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <!-- Main -->
+        <activity
+            android:name="com.alexcai.whoispy.ActivityMain"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <!-- Login -->
+        <activity 
+            android:name=".ActivityLogin"
+            android:label="@string/title_login"
+            >
+            
+        </activity>
+        
+        <!-- Register -->
+        <activity 
+            android:name=".ActivityRegister"
+            android:label="@string/title_register"
+            >
+            
+        </activity>
+        
+        <!-- Menu -->
+        <activity 
+            android:name=".ActivityMenu"
+            android:label="@string/title_menu"
+            >
+            
+        </activity>
+        
+        <!-- Help -->
+        <activity 
+            android:name=".ActivityAbout"
+            android:label="@string/title_about"
+            android:theme="@style/test"
+            >
+            
+        </activity>
+
+        <!-- Rule -->
+        <activity 
+            android:name=".ActivityRule"
+            android:label="@string/title_rule"
+            android:theme="@style/test"
+            >
+            
+        </activity>
+        
+        <!-- Set Player -->
+        <activity 
+            android:name=".ActivitySetPlayer"
+            android:label="@string/title_set_player"
+            android:theme="@style/test"
+            >
+            
+        </activity>
+        
+        <!-- Set Role Num -->
+        <activity 
+            android:name=".ActivitySetRoleNum"
+            android:label="@string/title_set_role_num"
+            android:theme="@style/test"
+            >
+            
+        </activity>
+        
+        <!-- Set Word -->
+        <activity 
+            android:name=".ActivitySetWord"
+            android:label="@string/title_set_word"
+            android:theme="@style/test"
+            >
+            
+        </activity>
+        
+        <!-- Game View -->
+        <activity 
+            android:name=".ActivityGameView"
+            android:label="@string/title_game_view"
+            android:theme="@style/test"
+            >
+            
+        </activity>
+        
+        <!-- WordDisplay View -->
+        <activity 
+            android:name="com.alexcai.whoispy.ActivityWordDisplay"
+            android:label="@string/title_word_display"
+            android:theme="@style/test"
+            >
+            
+        </activity>
+    </application>
+
+</manifest>
