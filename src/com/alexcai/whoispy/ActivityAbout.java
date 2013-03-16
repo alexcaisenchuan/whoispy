@@ -27,8 +27,6 @@ public class ActivityAbout extends Activity{
 		TextView title_text = (TextView)findViewById(R.id.title_text);
 		title_text.setText(R.string.title_about);
 		
-		Log.d(TAG, "onCreate");
-		
 		/*绑定界面元素*/
 		//上一步按钮
 		ImageButton prev_button = (ImageButton)findViewById(R.id.title_button_left);

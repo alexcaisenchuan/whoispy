@@ -23,6 +23,8 @@
     <string name="hint_common_error">未知错误！</string>
     <string name="hint_send_sms">用户不在线，发出短信！</string>
     <string name="hint_send_word_success">成功发出词汇！</string>
+    <string name="hint_web_site">(未安装应用的玩家可以登录zhuoguiyouxi.com参与游戏)</string>
+    <string name="hint_update">检测到更新版本，是否需要升级？</string>
     
     <string name="button_ok">确认</string>
     <string name="button_cancel">取消</string>
@@ -43,7 +45,8 @@
     <string name="text_login">登录</string>
     <string name="text_register">注册</string>
     <string name="text_register_1">注册新账户</string>
-   
+    <string name="notice_register">(注意：请使用真实手机号进行注册，游戏中会使用其作为玩家的唯一标识)</string>
+    
     <!-- **************************Menu Activity************************** -->
     <string name="title_menu">菜单</string>
     <string name="main_title">捉  鬼  游  戏</string>
@@ -84,6 +87,7 @@
     <string name="text_trick_player_num">傻子的个数 : </string>
     <!-- 游戏中提示字符串  -->
     <string name="hint_role_num_invalid">人数设置不合理啊！</string>
+    <string name="notice_role_set">(说明：鬼收不到词汇，傻子与好人收到不同的词汇，好人的个数 = 总人数 - 鬼的个数 - 傻子的个数)</string>
     
     <!-- **************************Set Word Activity************************** -->
     <string name="title_set_word">设置词汇</string>
@@ -91,6 +95,7 @@
     <string name="text_trick_player_word">傻子的词汇 : </string>
     <!-- 游戏中提示字符串  -->
     <string name="hint_word_invalid">请输入有效词汇！</string>
+    <string name="hint_read_recommend_word">正在读取推荐词汇…</string>
     <string name="game_check_button">查看游戏</string>
     <string name="game_start_button">开始游戏</string>
     

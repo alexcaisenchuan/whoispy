@@ -121,7 +121,6 @@ public class ActivityWordDisplay extends ListActivity{
 				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);		//清空Activity栈中ActivityMain之上的Activity
 				startActivity(i);
 				finish();		//要记得关闭当前Activity
-				Log.d(TAG, "finish!");
 			}
 		});
 		

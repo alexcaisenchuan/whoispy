@@ -53,9 +53,7 @@ public class ActivityLogin extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
-		Log.d(TAG, "onCreate!");
-		
+
 		/*读取游戏信息*/
 		AppGameInfos infos = (AppGameInfos)(getApplicationContext());
 		gameInfo = infos.game;
@@ -135,7 +133,7 @@ public class ActivityLogin extends Activity{
         mHandler.sendMessage(msg_open_progressbar);  
 		
 		/*访问相关网页，进行登录*/
-        int ret = gameInfo.user.login(phone_num, passwd);
+        int ret = gameInfo.user_login(phone_num, passwd);
         
         /*关闭进度条*/
         Message msg_close_progressbar = new Message();

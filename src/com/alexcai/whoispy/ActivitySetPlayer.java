@@ -71,8 +71,6 @@ public class ActivitySetPlayer extends ListActivity{
 		TextView title_text = (TextView)findViewById(R.id.title_text);
 		title_text.setText(R.string.title_set_player);
 		
-		Log.d(TAG, "onCreate, this : " + this);
-		
 		/*读取游戏信息*/
 		AppGameInfos infos = (AppGameInfos)(getApplicationContext());
 		gameInfo = infos.game;
@@ -189,7 +187,6 @@ public class ActivitySetPlayer extends ListActivity{
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, "onActivityResult() requestCode : " + requestCode + ", resultCode : " + resultCode + ", data " + data);
 		
 		switch (requestCode)
 		{
@@ -228,8 +225,6 @@ public class ActivitySetPlayer extends ListActivity{
 					getResources().getString(R.string.delete_player), 
 					getResources().getString(R.string.set_player_shield)};
 			}
-			
-			Log.d(TAG, "player_id : " + player_id + ", list_index : " + list_index);
 			
 			AlertDialog.Builder dlg = new AlertDialog.Builder(ActivitySetPlayer.this);
 			dlg.setTitle(R.string.player_setting);
@@ -364,10 +359,6 @@ public class ActivitySetPlayer extends ListActivity{
 		Player player = gameInfo.player_get_first();
 		while(player != null)
 		{
-			Log.d(TAG, "Resume player! id : " + player.id 
-					+ ", name : " + player.name 
-					+ ", phone : " + player.phone_num);
-			
 			//添加界面元素
 			layout_add_one_player(player);
 			

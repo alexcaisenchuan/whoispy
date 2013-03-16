@@ -5,6 +5,7 @@
 	<color name="player_shield">#35FFC435</color>
     <color name="title_text">#ff000000</color>
     <color name="link">#ff0000ff</color>
+    <color name="button_word">#ffffffff</color>
     
 	<drawable name="red">#7f00</drawable>
     <drawable name="blue">#770000ff</drawable>

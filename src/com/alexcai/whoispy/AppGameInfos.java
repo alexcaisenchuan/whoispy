@@ -14,8 +14,6 @@ public class AppGameInfos extends Application{
 	 * 重写方法
 	 *------------------------*/
 	public AppGameInfos() {
-		Log.d(TAG, "Construct! this : " + this);
-		
 		//创建内部数据结构
 		game = new Game(this);
 	}

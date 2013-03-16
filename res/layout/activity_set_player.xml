@@ -9,14 +9,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" 
-        android:layout_marginTop="5dip">
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="5dip">
 
         <EditText
             android:id="@+id/phone_num_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            android:layout_marginBottom="25dip"
             android:inputType="phone"
             android:textSize="20sp" 
             android:lines="1"/>
@@ -28,6 +28,12 @@
             android:text="@string/phone_book_button"
             android:textSize="15sp" />
     </LinearLayout>
+    
+    <TextView 
+        android:text="@string/hint_web_site"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
     
     <!-- 玩家列表 -->
     <ListView

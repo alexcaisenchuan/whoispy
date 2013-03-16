@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <TableRow>
+    <TableRow
+        android:layout_marginTop="10sp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,7 +20,8 @@
             android:textSize="20sp" />
     </TableRow>
 
-    <TableRow>
+    <TableRow
+        android:layout_marginTop="5sp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,4 +54,12 @@
             android:inputType="number" >
         </EditText>
     </TableRow>
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notice_role_set"
+        android:textSize="15sp"
+        android:layout_marginTop="15sp"
+        />
 </TableLayout>

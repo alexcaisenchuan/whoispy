@@ -39,8 +39,6 @@ public class ActivitySetRoleNum extends Activity{
 		TextView title_text = (TextView)findViewById(R.id.title_text);
 		title_text.setText(R.string.title_set_role_num);
 		
-		Log.d(TAG, "onCreate, this : " + this);
-		
 		/*读取游戏信息*/
 		AppGameInfos infos = (AppGameInfos)(getApplicationContext());
 		gameInfo = infos.game;

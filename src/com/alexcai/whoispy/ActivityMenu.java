@@ -1,15 +1,23 @@
 package com.alexcai.whoispy;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ActivityMenu extends Activity {
@@ -26,11 +34,13 @@ public class ActivityMenu extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu);
 		
-		Log.d(TAG, "onCreate");
-		
 		/*读取游戏信息*/
 		AppGameInfos infos = (AppGameInfos)(getApplicationContext());
 		gameInfo = infos.game;
+		
+		/*设置版本号*/
+		TextView version_text = (TextView)findViewById(R.id.version_text);
+		version_text.setText(getVersion());
 		
 		/*绑定按钮点击*/
 		//读取词汇
@@ -105,15 +115,13 @@ public class ActivityMenu extends Activity {
 				startActivity(i);
 			}
 		});
-		//退出登录
-		Button logout_button = (Button)findViewById(R.id.logout_button);
-		logout_button.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				ad_show();		//弹窗询问是否退出
-			}
-		});
+		
+		//判断是否要升级
+		if(gameInfo.want_update && gameInfo.sys_need_update())
+		{
+			update_ad_show();
+			gameInfo.want_update = false;
+		}
 	}
 
 	@Override
@@ -139,6 +147,33 @@ public class ActivityMenu extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 	
+	@Override
+    /**点击菜单键后显示我们的设置菜单*/
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	
+    	MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_logout, menu);
+        
+        return true;
+    }
+    
+    @Override
+    /**选择某个菜单项时调用*/
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId())
+    	{
+	    	case R.id.logout:
+	    		ad_show();		//弹窗询问是否退出
+	    		return true;
+	    		
+	    	default:
+	    		break;
+    	}
+    	
+    	return false;
+    }
+    
 	/*-----------------------------
 	 * 自定义方法
 	 * ---------------------------*/
@@ -172,6 +207,36 @@ public class ActivityMenu extends Activity {
 	}
 	
 	/**
+	 * 显示询问界面
+	 * */
+	private void update_ad_show() {
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+		b.setTitle(R.string.hint_update);
+		b.setIcon(android.R.drawable.ic_dialog_info);
+		b.setPositiveButton(
+				getString(R.string.button_ok), 
+				new DialogInterface.OnClickListener() {			
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Uri uri = Uri.parse("http://zhuoguiyouxi.com/whoispy_front/files/whoispy.apk");
+						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+						startActivity(intent);
+					}
+		});
+		b.setNegativeButton(
+				getString(R.string.button_cancel), 
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						//什么都不做
+					}
+		});
+		
+		AlertDialog ad = b.create();
+		ad.show();
+	}
+	
+	/**
 	 * 登出
 	 * */
 	private void logout() {
@@ -184,5 +249,24 @@ public class ActivityMenu extends Activity {
 		//启动登陆界面
 		Intent i = new Intent(ActivityMenu.this, ActivityLogin.class);
 		startActivity(i);
+	}
+	
+	/**
+	 * 读取版本号
+	 * */
+	private String getVersion() {
+		PackageManager pm = getPackageManager();
+		PackageInfo pi;
+		String version;
+		try {
+			pi = pm.getPackageInfo(getPackageName(), 0);
+			version = pi.versionName;
+		} catch (NameNotFoundException e) {
+			Log.d(TAG, "Exception : " + e.toString());
+			e.printStackTrace();
+			version = "";
+		}
+		
+		return version;
 	}
 }

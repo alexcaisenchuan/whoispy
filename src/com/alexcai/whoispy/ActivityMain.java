@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 public class ActivityMain extends Activity {
@@ -44,8 +46,6 @@ public class ActivityMain extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		Log.d(TAG, "onCreate!");
-		
 		/*读取游戏信息*/
 		AppGameInfos infos = (AppGameInfos)(getApplicationContext());
 		gameInfo = infos.game;
@@ -59,7 +59,6 @@ public class ActivityMain extends Activity {
 		if((keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME) 
 				&& event.getAction() == KeyEvent.ACTION_DOWN)
 		{
-			Log.d(TAG, "Exit app!");
 			//退出程序
 			finish();		//finish仅仅只是退出Activity
 			android.os.Process.killProcess(android.os.Process.myPid());
@@ -73,7 +72,7 @@ public class ActivityMain extends Activity {
 	 * */
 	private void task_login(){
 		//读取本地保存的用户信息并尝试登陆
-		int ret = gameInfo.user.resumeUser();
+		int ret = gameInfo.user_resume();
 		
 		//创建消息
 		Message msg = new Message();
@@ -157,7 +156,6 @@ public class ActivityMain extends Activity {
 					startActivity(i);
 					finish();		//关闭当前Activity
 	            	//显示提示信息
-					/*显示欢迎信息*/
 					String text = getString(R.string.hint_welcome) + gameInfo.user.curr_nickname;
 					Toast toast = Toast.makeText(ActivityMain.this, text, Toast.LENGTH_SHORT);
 					toast.show();

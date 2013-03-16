@@ -52,6 +52,9 @@ public class Web {
 	final static String FLAG_SESSION_ID = "session_id";
 	final static String FLAG_RET_WORD_ADD = "ret_word_add";	//添加词汇是否成功的信息
 	final static String FLAG_NICKNAME = "nickname";
+	final static String FLAG_WORD_LIST = "word_list";
+	final static String FLAG_REMOTE_RID = "remote_rid";
+	final static String FLAG_VERSION_CODE = "version_code";
 	//err_code
 	final static String CODE_NO_ERR = "success";
 	final static String CODE_ERROR = "error";
@@ -59,6 +62,9 @@ public class Web {
 	final static String CODE_ERR_PHONE_EXIST = "err_phone_exist";
 	final static String CODE_ERR_PASSWD = "err_passwd";
 	final static String CODE_ERR_USER_OFFLINE = "err_user_offline";
+	/*网页地址*/
+	final static String WEB_URL_WORDS = "http://caisenchuan.web-184.com/whoispy/words.php";		//words.php
+	final static String WEB_URL_USERS = "http://caisenchuan.web-184.com/whoispy/users.php";		//users.php
 	
 	/*--------------------------
 	 * 属性
@@ -99,7 +105,6 @@ public class Web {
 			
 			/*等待返回结果*/
 			int status_code = http_respon.getStatusLine().getStatusCode();
-			Log.d(TAG, "status code : " + status_code);
 			if(status_code == HttpStatus.SC_OK)
 			{
 				String str = EntityUtils.toString(http_respon.getEntity());

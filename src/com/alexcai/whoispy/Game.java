@@ -34,8 +34,13 @@ import com.alexcai.whoispy.Err.ExceptionNetwork;
 import com.alexcai.whoispy.Err.ExceptionNetworkTimeOut;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.util.Xml;
@@ -47,7 +52,7 @@ class Player {
 	/*--------------------------
 	 * 常量
 	 *--------------------------*/
-	private static final String TAG = "whoispy.Player";
+	//private static final String TAG = "whoispy.Player";
 	/* 角色定义 */
 	static final int ROLE_NONE = 0; // 无角色，一开始都是这个身份
 	static final int ROLE_SHIELD = 1; // 暂不参加游戏
@@ -94,8 +99,6 @@ class Player {
 		this.id = current_id;
 		current_id++;
 
-		Log.d(TAG, "New player! id : " + this.id + ", name : " + this.name
-				+ ", phone : " + this.phone_num);
 	}
 
 	/**
@@ -149,7 +152,7 @@ class SMS {
 	 *-------------------------*/
 	static void send(String send_to, String msg_text) {
 		try {
-			Log.d(TAG, ">>>>>>>Send sms to " + send_to);
+			Log.d(TAG, ">>>>>>>>>>>Send sms to :" + send_to);
 			
 			SmsManager sms = SmsManager.getDefault();
 
@@ -183,14 +186,14 @@ class User {
 	final static String PREF_FILE_NAME		= "userPrefs";	//保存文件名
 	final static String PREF_TAG_PHONE 		= "phone";
 	final static String PREF_TAG_PASSWD 	= "passwd";
-	/*网页地址*/
-	final static String WEB_URL_USERS = "http://caisenchuan.web-184.com/whoispy/users.php";		//users.php
 	
 	/*--------------------------
 	 * 属性
 	 *-------------------------*/
-	String curr_session;	//当前session id
-	String curr_nickname;	//当前用户昵称
+	String curr_session;			//当前session id
+	String curr_nickname;			//当前用户昵称
+	int	   remote_rid;				//服务器上推荐词汇的最新rid编号，放在这有点奇怪哈...
+	int    remote_versionCode;		//当前应用的最新版本号，放到这不太合理...
 	
 	private ContextWrapper context_wrapper;		//Application Context
 	
@@ -203,6 +206,7 @@ class User {
 	User(ContextWrapper context) {
 		curr_session = "";
 		curr_nickname = "";
+		remote_rid = 0;
 		
 		this.context_wrapper = context;
 	}
@@ -227,7 +231,7 @@ class User {
 			
 			/*发出请求*/
 			Respon respon = new Respon();
-			int flag = Web.req_respon(WEB_URL_USERS, params, respon, 3);
+			int flag = Web.req_respon(Web.WEB_URL_USERS, params, respon, 3);
 			
 			/*根据函数执行情况进行不同处理*/
 			if(Err.NO_ERR == flag)
@@ -282,7 +286,7 @@ class User {
 			
 			/*发出请求*/
 			Respon respon = new Respon();
-			int flag = Web.req_respon(WEB_URL_USERS, params, respon, 3);
+			int flag = Web.req_respon(Web.WEB_URL_USERS, params, respon, 3);
 			
 			if(Err.NO_ERR == flag)
 			{
@@ -296,6 +300,10 @@ class User {
 					this.curr_session = res.getString(Web.FLAG_SESSION_ID);
 					//记录昵称
 					this.curr_nickname = res.getString(Web.FLAG_NICKNAME);
+					//记录remote_rid
+					this.remote_rid = res.getInt(Web.FLAG_REMOTE_RID);
+					//记录version_code
+					this.remote_versionCode = res.getInt(Web.FLAG_VERSION_CODE);
 					
 					ret = Err.NO_ERR;
 				}
@@ -347,8 +355,6 @@ class User {
 	 * 保存用户信息
 	 * */
 	public boolean saveUser(String phone, String passwd) {
-		Log.d(TAG, "Try to save user info!");
-		
 		try{
 			EncrypAES aes = new EncrypAES();		//解密对象
 			
@@ -380,9 +386,6 @@ class User {
 			/*读取保存文件*/
 			String saved_phone = this.context_wrapper.getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE).getString(PREF_TAG_PHONE, "");
 			String saved_passwd = this.context_wrapper.getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE).getString(PREF_TAG_PASSWD, "");
-			
-			Log.d(TAG, "phone : " + saved_phone);
-			Log.d(TAG, "passwd : " + saved_passwd);
 			
 			/*若手机号或密码不存在，则认为错，否则返回成功*/
 			if(saved_phone.equals("") || saved_passwd.equals(""))
@@ -462,7 +465,7 @@ class User {
 		/*访问网页，删除词汇*/
 		String wid_list = arr.toString();
 		HashMap<String, String> ret_list = new HashMap<String, String>();
-		Log.d(TAG, "wid_list : " + wid_list);
+		//Log.d(TAG, "wid_list : " + wid_list);
 		int ret = Word.del_list(curr_session, wid_list, ret_list);
 		
 		return ret;
@@ -538,9 +541,7 @@ class Word {
 	private final static String TAG_TIME = "time";
 	private final static String TAG_IS_DEL = "is_del";
 	
-	/*网页地址*/
-	final static String WEB_URL_WORDS = "http://caisenchuan.web-184.com/whoispy/words.php";		//words.php
-	
+
 	/*--------------------------
 	 * 属性
 	 *-------------------------*/
@@ -568,7 +569,7 @@ class Word {
 			
 			/*开始连接*/
 			Respon respon = new Respon();
-			ret = Web.req_respon(WEB_URL_WORDS, params, respon, 3);
+			ret = Web.req_respon(Web.WEB_URL_WORDS, params, respon, 3);
 			
 			/*根据返回结果做处理*/
 			if(Err.NO_ERR == ret)
@@ -618,7 +619,7 @@ class Word {
 			
 			/*开始连接*/
 			Respon respon = new Respon();
-			ret = Web.req_respon(WEB_URL_WORDS, params, respon, 3);
+			ret = Web.req_respon(Web.WEB_URL_WORDS, params, respon, 3);
 			
 			/*根据返回结果做处理*/
 			if(Err.NO_ERR == ret)
@@ -677,7 +678,7 @@ class Word {
 			
 			/*开始连接*/
 			Respon respon = new Respon();
-			ret = Web.req_respon(WEB_URL_WORDS, params, respon, 3);
+			ret = Web.req_respon(Web.WEB_URL_WORDS, params, respon, 3);
 			
 			/*根据返回结果做处理*/
 			if(Err.NO_ERR == ret)
@@ -744,7 +745,7 @@ class Word {
 			
 			/*开始连接*/
 			Respon respon = new Respon();
-			ret = Web.req_respon(WEB_URL_WORDS, params, respon, 3);
+			ret = Web.req_respon(Web.WEB_URL_WORDS, params, respon, 3);
 			
 			/*根据返回结果做处理*/
 			if(Err.NO_ERR == ret)
@@ -793,7 +794,7 @@ class Word {
 			
 			/*开始连接*/
 			Respon respon = new Respon();
-			ret = Web.req_respon(WEB_URL_WORDS, params, respon, 3);
+			ret = Web.req_respon(Web.WEB_URL_WORDS, params, respon, 3);
 			
 			/*根据返回结果做处理*/
 			if(Err.NO_ERR == ret)
@@ -859,7 +860,7 @@ class Word {
 		
 		/*转换成字符串*/
 		String str = arr.toString();
-		Log.d(TAG, "Json str : " + str);
+		//Log.d(TAG, "Json str : " + str);
 		
 		return str;
 	}
@@ -888,6 +889,270 @@ class Word {
 		}
 		
 		return word_list;
+	}
+}
+
+/**
+ * 推荐词汇类，与推荐词汇相关的数据以及操作方法都在此类中
+ * */
+class RecommendWord {
+	/*--------------------------
+	 * 常量
+	 *-------------------------*/
+	private final String TAG = "whoispy.RecommendWord";
+	/*网页返回字段*/
+	private String TAG_CIVIL_WORD = "c";
+	private String TAG_TRICK_WORD = "t";
+	private String TAG_CLIENT_RID = "client_rid";
+	private String TAG_WORD_LIST = "word_list";
+	/*保存文件名*/
+	private String FILE_NAME_RECOMMEND_WORD = "recommend_word.json";
+	
+	/*--------------------------
+	 * 内部类
+	 *-------------------------*/
+	/**
+	 * 词汇组
+	 * */
+	class WordPair {
+		String civil_word;		//好人词汇
+		String trick_word;		//傻子词汇
+		
+		public WordPair(String civil_word, String trick_word)
+		{
+			this.civil_word = civil_word;
+			this.trick_word = trick_word;
+		}
+	}
+	
+	/*--------------------------
+	 * 属性
+	 *-------------------------*/
+	private ContextWrapper context_wrapper;		//应用程序上下文，用于读写本地文件等
+	private int current_index = 0;				//记录读取到哪个单词，不适用随机读取，而是使用顺序读取方式
+	private int client_rid = 0;					//当前最新的词汇组rid
+	private int remote_rid = 0; 				//服务器上最新的词汇组rid
+	private String session_id; 					//当前会话session_id；
+	private ArrayList<WordPair> word_pair_list = new ArrayList<WordPair>(); 		//内置的词汇组列表
+
+	/*--------------------------
+	 * 方法
+	 *-------------------------*/
+	public RecommendWord(ContextWrapper context_wrapper) {
+		this.context_wrapper = context_wrapper;
+	}
+	
+	/**
+	 * 是否需要读取远程词汇
+	 * @return true - 需要； false - 不需要；
+	 * */
+	public boolean need_to_read_remote_words()
+	{
+		Log.d(TAG, "client_rid : " + client_rid + ", remote_rid : " + remote_rid);
+		if(client_rid < remote_rid)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * 读取服务器上的词组
+	 * @return 错误代码；
+	 * */
+	public int get_remote_word()
+	{
+		int ret = Err.NO_ERR;
+		
+		try{
+			/*设置参数*/
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("session_id", this.session_id));
+			params.add(new BasicNameValuePair("client_rid", String.valueOf(this.client_rid)));
+			params.add(new BasicNameValuePair("mode", "recommend_search"));
+			
+			/*开始连接*/
+			Respon respon = new Respon();
+			ret = Web.req_respon(Web.WEB_URL_WORDS, params, respon, 3);
+			
+			/*根据返回结果做处理*/
+			if(Err.NO_ERR == ret)
+			{
+				//创建JSON对象
+				JSONObject json = new JSONObject(respon.str);
+				
+				//读取成功标志
+				String web_ret = json.getString(Web.FLAG_RET);
+				if(web_ret.equals(Web.CODE_NO_ERR))		//查询成功
+				{
+					//更新本地rid以及远程rid的值
+					int rid = json.getInt(Web.FLAG_REMOTE_RID);
+					this.remote_rid = rid;
+					this.client_rid = rid;
+					
+					//保存词汇列表
+					JSONArray json_word_list = json.getJSONArray(Web.FLAG_WORD_LIST);
+					for(int i = 0; i < json_word_list.length(); i++)
+					{
+						//从json字符串中解析各个字段
+						JSONObject json_word = json_word_list.getJSONObject(i);
+						String civil_word = json_word.getString(TAG_CIVIL_WORD);
+						String trick_word = json_word.getString(TAG_TRICK_WORD);
+						
+						Log.d(TAG, "----------------------");
+						Log.d(TAG, "civil_word : " + civil_word);
+						Log.d(TAG, "trick_word : " + trick_word);
+						
+						//创建新的OneWord对象
+						WordPair one_word = new WordPair(civil_word, trick_word);
+						
+						//将对象加到队列中
+						this.word_pair_list.add(one_word);
+					}
+				}
+				else									//查询失败
+				{
+					ret = Err.ERR_COMMON;
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			Log.d(TAG, "Exception : " + e.toString());
+			ret = Err.ERR_COMMON;
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * 设置remote_rid、session_id
+	 * */
+	public void set_server_data(int remote_rid, String session_id)
+	{
+		this.remote_rid = remote_rid;
+		this.session_id = session_id;
+	}
+	
+	/**
+	 * 读取一组词汇
+	 * @param word - 输出参数，保存查询到的词汇；
+	 * @return 错误代码；
+	 * */
+	public int read_word(WordPair word) {
+		int ret = Err.NO_ERR;
+		
+		/*先给词汇赋默认值*/
+		word.civil_word = "";
+		word.trick_word = "";
+		
+		/*挑选词汇*/
+		if(word_pair_list.size() > 0)
+		{
+			if(current_index >= word_pair_list.size())
+			{
+				current_index = 0;
+			}
+			
+			word.civil_word = word_pair_list.get(current_index).civil_word;
+			word.trick_word = word_pair_list.get(current_index).trick_word;
+			
+			current_index++;
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * 从文件中读取推荐词组的列表
+	 * */
+	public void read_words_from_file()
+	{
+		try {
+			/*读取文件*/
+			InputStream fin = context_wrapper.openFileInput(FILE_NAME_RECOMMEND_WORD);
+			int len = fin.available();
+			byte buff[] = new byte[len];
+			fin.read(buff);
+			String str = EncodingUtils.getString(buff, "utf-8");
+			fin.close();
+			
+			/*创建json对象*/
+			JSONObject json = new JSONObject(str);
+			
+			/*解析client_rid*/
+			this.client_rid = json.getInt(TAG_CLIENT_RID);
+			Log.d(TAG, "client_rid : " + this.client_rid);
+			
+			/*解析词汇列表*/
+			JSONArray array = json.getJSONArray(TAG_WORD_LIST);
+			ArrayList<WordPair> word_pair_list = new ArrayList<RecommendWord.WordPair>();
+			String civil_word;
+			String trick_word;
+			for(int i = 0; i < array.length(); i++)
+			{
+				JSONObject element = array.getJSONObject(i);
+				civil_word = element.getString(TAG_CIVIL_WORD);
+				trick_word = element.getString(TAG_TRICK_WORD);
+				
+				WordPair word = new WordPair(civil_word, trick_word);
+				word_pair_list.add(word);
+				
+				//Log.d(TAG, "add word pair : " + civil_word + ", " + trick_word);
+			}
+			this.word_pair_list = word_pair_list;
+		}
+		catch(Exception e)
+		{
+			Log.d(TAG, "Exception : " + e);
+			e.printStackTrace();
+		}
+		
+		return;
+	}
+	
+	/**
+	 * 把推荐词组列表存储到文件中
+	 * */
+	public void save_words_to_file()
+	{
+		try{
+			/*将rid及词汇列表转换成json格式*/
+			JSONObject json = new JSONObject();
+			//client_rid
+			json.put(TAG_CLIENT_RID, this.client_rid);
+			//词汇列表
+			JSONArray array = new JSONArray();
+			for(WordPair element : word_pair_list)
+			{
+				JSONObject obj = new JSONObject();
+				obj.put(TAG_CIVIL_WORD, element.civil_word);
+				obj.put(TAG_TRICK_WORD, element.trick_word);
+				
+				array.put(obj);
+			}
+			json.put(TAG_WORD_LIST, array);
+			//to string
+			String str = json.toString();
+			//Log.d(TAG, "json : " + str);
+			
+			/*保存成文件*/
+			OutputStream os = context_wrapper.openFileOutput(FILE_NAME_RECOMMEND_WORD, Context.MODE_PRIVATE);
+			OutputStreamWriter ow = new OutputStreamWriter(os);
+			ow.write(str);
+			ow.close();
+			os.close();
+		}
+		catch(Exception e)
+		{
+			Log.d(TAG, "Exception : " + e.toString());
+			e.printStackTrace();
+		}
+		
+		return;
 	}
 }
 
@@ -956,7 +1221,7 @@ public class Game {
 
 		@Override
 		public void startDocument() throws SAXException {
-			Log.d(TAG, "~~~~~~~~~~~~~~~~~startDocument~~~~~~~~~~~~~~");
+			//Log.d(TAG, "~~~~~~~~~~~~~~~~~startDocument~~~~~~~~~~~~~~");
 			player_list = new ArrayList<Player>();
 			super.startDocument();
 		}
@@ -964,7 +1229,7 @@ public class Game {
 		@Override
 		public void startElement(String uri, String localName, String qName,
 				Attributes attributes) throws SAXException {
-			Log.d(TAG, "---------startElement(" + localName + ")-----------");
+			//Log.d(TAG, "---------startElement(" + localName + ")-----------");
 
 			// 保存 TAG NAME
 			this.current_tag = localName;
@@ -983,7 +1248,7 @@ public class Game {
 
 			/* 添加玩家信息 */
 			String str = new String(ch, start, length); // 读取标签里的内容
-			Log.d(TAG, str);
+			//Log.d(TAG, str);
 			if (this.current_tag != "") {
 				if (this.current_tag.equals(XML_TAG_NAME)) // name
 				{
@@ -1012,14 +1277,14 @@ public class Game {
 		@Override
 		public void endElement(String uri, String localName, String qName)
 				throws SAXException {
-			Log.d(TAG, "---------endElement(" + localName + ")-----------");
+			//Log.d(TAG, "---------endElement(" + localName + ")-----------");
 
 			/* 遇到结束标签，添加一个玩家 */
 			if (localName.equals(XML_TAG_PLAYER)) {
 				player_list.add(player_new);
-				Log.d(TAG, "name " + player_new.name + ", phone "
+				/*Log.d(TAG, "name " + player_new.name + ", phone "
 						+ player_new.phone_num + ", role " + player_new.role
-						+ ", status " + player_new.status);
+						+ ", status " + player_new.status);*/
 			}
 
 			super.endElement(uri, localName, qName);
@@ -1027,7 +1292,7 @@ public class Game {
 
 		@Override
 		public void endDocument() throws SAXException {
-			Log.d(TAG, "~~~~~~~~~~~~~~~~~endDocument~~~~~~~~~~~~~~");
+			//Log.d(TAG, "~~~~~~~~~~~~~~~~~endDocument~~~~~~~~~~~~~~");
 
 			super.endDocument();
 		}
@@ -1048,6 +1313,10 @@ public class Game {
 	 *-------------------------*/
 	/* 用户信息 */
 	User user;									//当前用户
+	/* 推荐词汇信息 */
+	RecommendWord recommend_word;
+	/* 用户是否想升级，在一次应用启动中，只会显示一次提示升级信息 */
+	boolean want_update = true;					//默认想升级，点击一次后就不想升级了
 	
 	/* 游戏信息 */
 	private ArrayList<Player> player_list;		//玩家列表
@@ -1066,14 +1335,14 @@ public class Game {
 	 * 构造方法
 	 *-------------------------*/
 	public Game(ContextWrapper wrapper) {
-		/* 初始化各个元素 */
-		Log.d(TAG, "Game construct!");
-		
 		/*保存Application上下文*/
 		this.context_wrapper = wrapper;
 		
 		/*重置用户信息*/
 		this.user = new User(wrapper);
+		
+		/*重置推荐词汇*/
+		this.recommend_word = new RecommendWord(wrapper);
 		
 		/*重置游戏信息*/
 		game_info_reset();
@@ -1103,7 +1372,7 @@ public class Game {
 		// 挑选卧底
 		for (int i = 0; i < this.spy_num; i++) {
 			// 随机选择玩家
-			player_index = (Math.abs(r.nextInt())) % player_id_list.size(); // 通过取余方法限制范围
+			player_index = r.nextInt(player_id_list.size()); // 通过取余方法限制范围
 			Log.d(TAG, "spy " + i + ", player_index : " + player_index
 					+ ", player_num : " + player_id_list.size());
 			// 设置玩家身份
@@ -1115,7 +1384,7 @@ public class Game {
 		// 挑选打酱油的
 		for (int i = 0; i < this.trick_num; i++) {
 			// 随机选择玩家
-			player_index = (Math.abs(r.nextInt())) % player_id_list.size(); // 通过取余方法限制范围
+			player_index = r.nextInt(player_id_list.size()); // 通过取余方法限制范围
 			Log.d(TAG, "trick " + i + ", player_index : " + player_index
 					+ ", player_num : " + player_id_list.size());
 			// 设置玩家身份
@@ -1179,6 +1448,27 @@ public class Game {
 	/*--------------------------
 	 * 公有方法
 	 *-------------------------*/
+	/* =================用户相关================ */
+	/**
+	 * 用户登录
+	 * */
+	public int user_login(String phone, String passwd){
+		int ret = user.login(phone, passwd);		//进行登录
+		recommend_word.set_server_data(user.remote_rid, user.curr_session);		//设置推荐词汇相关数据
+		
+		return ret;
+	}
+	
+	/**
+	 * 用户恢复登录
+	 * */
+	public int user_resume(){
+		int ret = user.resumeUser();		//进行登录
+		recommend_word.set_server_data(user.remote_rid, user.curr_session);		//设置推荐词汇相关数据
+		
+		return ret;
+	}
+	
 	/* =================玩家相关================ */
 	/**
 	 * 添加新玩家
@@ -1230,8 +1520,6 @@ public class Game {
 	public int player_remove(int id) {
 		for (Player element : player_list) {
 			if (id == element.id) {
-				Log.d(TAG, "Remove player, id : " + element.id + ", name="
-						+ element.name + ", phone=" + element.phone_num);
 				player_list.remove(element); // 删除数据
 				return NO_ERR;
 			}
@@ -1254,8 +1542,6 @@ public class Game {
 		for (Player element : player_list) {
 			if (id == element.id) // 设置新Host
 			{
-				Log.d(TAG, "Set player id : " + id + ", name : " + element.name
-						+ ", role : " + role);
 				element.role = role;
 				return NO_ERR;
 			}
@@ -1278,8 +1564,6 @@ public class Game {
 		for (Player element : player_list) {
 			if (id == element.id) // 设置新Host
 			{
-				Log.d(TAG, "Set player id : " + id + ", name : " + element.name
-						+ ", status : " + status);
 				element.status = status;
 				return NO_ERR;
 			}
@@ -1299,7 +1583,6 @@ public class Game {
 	public Player player_get(int id) {
 		for (Player element : player_list) {
 			if (element.id == id) {
-				Log.d(TAG, "Find player id : " + id);
 				return element;
 			}
 		}
@@ -1577,11 +1860,13 @@ public class Game {
 	 * 继续游戏
 	 * */
 	public void game_continue() {
-		data_readGamePref();			//读取游戏配置
+		data_readGamePref();						//读取游戏配置
 		
-		if(!data_readPlayerList())		//从XML读取玩家列表
+		recommend_word.read_words_from_file();		//读取推荐词汇列表
+		
+		if(!data_readPlayerList())					//从XML读取玩家列表
 		{
-			game_info_reset();			//若失败，则复位游戏信息
+			game_info_reset();						//若失败，则复位游戏信息
 		}
 	}
 	
@@ -1648,7 +1933,6 @@ public class Game {
 				{
 					//查找HashMap中对应手机号的ret值，
 					//若是success，则什么都不做，否则发出短信
-					Log.d(TAG, "Try to get phone : " + player.phone_num);
 					String ret_get = ret_list.get(player.phone_num);
 					if(ret_get != null && ret_get.equals(Web.CODE_NO_ERR))
 					{
@@ -1666,14 +1950,6 @@ public class Game {
 	}
 
 	/* =================数据相关================ */
-	/*--------------------
-	 * 常量
-	 *--------------------*/
-	
-	/*---------------------
-	 * 内部类
-	 *-------------------*/
-	
 	/**
 	 * 将玩家列表保存到XML文件中
 	 * @return 若成功，返回true；否则返回false；
@@ -1743,8 +2019,6 @@ public class Game {
 			return false;
 		}
 
-		Log.d(TAG, "Success wirte player_list to XML file!");
-		
 		return true;
 	}
 
@@ -1810,8 +2084,6 @@ public class Game {
 		context_wrapper.getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE).edit().putInt(PREF_TAG_ROUND, this.round).commit();
 		context_wrapper.getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE).edit().putInt(PREF_TAG_STEP, this.step).commit();
 		
-		Log.d(TAG, "Save game pref!");
-		
 		return true;
 	}
 	
@@ -1826,8 +2098,6 @@ public class Game {
 		this.trick_num  = context_wrapper.getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE).getInt(PREF_TAG_TRICK_NUM, 0);
 		this.round		= context_wrapper.getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE).getInt(PREF_TAG_ROUND, 1);
 		this.step		= context_wrapper.getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE).getInt(PREF_TAG_STEP, GAME_STEP_SET_PLAYER);
-		
-		Log.d(TAG, "Read game pref!");
 		
 		return true;
 	}
@@ -1884,8 +2154,6 @@ public class Game {
 			String str = EncodingUtils.getString(buff, "UTF-8");
 			fin.close();
 			
-			Log.d(TAG, "Read str : " + str);
-			
 			/*将字符串转换为数组*/
 			word_list = Word.string_to_array(str);
 		}
@@ -1918,5 +2186,31 @@ public class Game {
 		{
 			Log.d(TAG, "Exception : " + e.toString());
 		}
+	}
+	
+	/* =================系统相关================ */
+	public boolean sys_need_update() {
+		boolean ret = false;
+		PackageManager pm = context_wrapper.getPackageManager();
+		PackageInfo pi;
+		int versionCode;
+		
+		try {
+			/*读取当前应用的versionCode*/
+			pi = pm.getPackageInfo(context_wrapper.getPackageName(), 0);
+			versionCode = pi.versionCode;
+			/*与服务器上的versionCode做对比，若比较旧则需要更新*/
+			if(user.remote_versionCode > versionCode)
+			{
+				ret = true;
+			}
+		}
+		catch (NameNotFoundException e)
+		{
+			Log.d(TAG, "Exception : " + e.toString());
+			e.printStackTrace();
+		}
+		
+		return ret;
 	}
 }

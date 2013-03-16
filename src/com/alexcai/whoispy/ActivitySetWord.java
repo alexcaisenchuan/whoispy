@@ -23,12 +23,19 @@ public class ActivitySetWord extends Activity{
 	 *------------------------*/
 	static final String TAG = "whoispy.ActivitySetWord";
 	/*Msg类型*/
-	private final int MSG_FLAG_SEND_WORD_OK 				= 1;	//成功发出词汇
-	private static final int MSG_FLAG_OPEN_PROGRESS_BAR 	= 2;
-	private static final int MSG_FLAG_CLOSE_PROGRESS_BAR 	= 3;
-	private static final int MSG_FLAG_NETWORK_ERR 			= 4;
-	private static final int MSG_FLAG_NETWORK_TIMEOUT 		= 5;
-	private static final int MSG_FLAG_COMMON_ERR			= 6;	//未知错误
+	private static final int MSG_FLAG_SEND_WORD_OK 				= 1;	//成功发出词汇
+	private static final int MSG_FLAG_OPEN_PROGRESS_BAR_SEND 	= 2;	//发出词汇提示
+	private static final int MSG_FLAG_CLOSE_PROGRESS_BAR_SEND 	= 3;	//发出词汇提示
+	private static final int MSG_FLAG_OPEN_PROGRESS_BAR_READ 	= 4;	//读取推荐词汇提示
+	private static final int MSG_FLAG_CLOSE_PROGRESS_BAR_READ	= 5;	//读取推荐词汇提示
+	private static final int MSG_FLAG_NETWORK_ERR 				= 6;
+	private static final int MSG_FLAG_NETWORK_TIMEOUT 			= 7;
+	private static final int MSG_FLAG_COMMON_ERR				= 8;	//未知错误
+	private static final int MSG_FLAG_SET_RECOMMEND_WORD		= 9;	//设置词汇
+	private static final int MSG_FLAG_NONE						= 10;	//什么都不做
+	/*Bundle Key*/
+	private static final String KEY_CIVIL_WORD = "civil_word";
+	private static final String KEY_TRICK_WORD = "trick_word";
 	
 	/*--------------------------
 	 * 属性
@@ -37,7 +44,8 @@ public class ActivitySetWord extends Activity{
 	private EditText text_civil_word;
 	private EditText text_trick_word;
 	/*界面元素*/
-	private ProgressDialog mProgDialog;
+	private ProgressDialog mProgDialog_send;		//发送词汇提示
+	private ProgressDialog mProgDialog_read;		//读取推荐词汇提示
 	
 	//游戏相关信息
 	private Game gameInfo;
@@ -55,7 +63,7 @@ public class ActivitySetWord extends Activity{
 		/*设置界面*/
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.activity_set_word);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_l);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_l_star);
 		
 		/*设置标题文字*/
 		TextView title_text = (TextView)findViewById(R.id.title_text);
@@ -102,7 +110,22 @@ public class ActivitySetWord extends Activity{
 				Intent i = new Intent(ActivitySetWord.this, ActivitySetRoleNum.class);
 				startActivity(i);
 				finish();		//要记得关闭当前Activity
-				Log.d(TAG, "finish!");
+			}
+		});
+		//推荐词汇按钮
+		ImageButton star_button = (ImageButton)findViewById(R.id.title_button_star);
+		star_button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				/*创建读取线程并启动*/
+				Runnable r = new Runnable() {
+					@Override
+					public void run() {
+						recommend_word();
+					}
+				};
+				
+				new Thread(r).start();
 			}
 		});
 		
@@ -128,6 +151,8 @@ public class ActivitySetWord extends Activity{
 	protected void onPause() {
 		//保存游戏参数
 		gameInfo.data_saveGamePref();
+		//保存推荐词汇列表
+		gameInfo.recommend_word.save_words_to_file();
 		
 		super.onPause();
 	}
@@ -167,9 +192,69 @@ public class ActivitySetWord extends Activity{
 	}
 	
 	/**
+	 * 推荐词汇
+	 * */
+	private void recommend_word() {
+		/*判断是否需要连接网络*/
+		if(gameInfo.recommend_word.need_to_read_remote_words())
+		{
+			/*打开进度条*/
+			Message msg_open_progress_bar = new Message();
+			msg_open_progress_bar.what = MSG_FLAG_OPEN_PROGRESS_BAR_READ;
+			mHandler.sendMessage(msg_open_progress_bar);
+			
+			/*启动网络连接，读取词汇*/
+			int ret = gameInfo.recommend_word.get_remote_word();
+			
+			/*根据运行结果进行提示*/
+			Message msg = new Message();
+			switch(ret)
+			{
+				case Err.NO_ERR:
+					msg.what = MSG_FLAG_NONE;
+					break;
+					
+				case Err.ERR_NETWORK:
+					msg.what = MSG_FLAG_NETWORK_ERR;
+					break;
+					
+				case Err.ERR_NETWORK_TIMEOUT:
+					msg.what = MSG_FLAG_NETWORK_TIMEOUT;
+					break;
+					
+				case Err.ERR_COMMON:
+				default:
+					msg.what = MSG_FLAG_COMMON_ERR;
+					break;
+			}
+			mHandler.sendMessage(msg);
+			
+			/*关闭进度条*/
+			Message msg_close_progreass_bar = new Message();
+			msg_close_progreass_bar.what = MSG_FLAG_CLOSE_PROGRESS_BAR_READ;
+			mHandler.sendMessage(msg_close_progreass_bar);
+		}
+		
+		/*随机读取单词*/
+		RecommendWord.WordPair word = gameInfo.recommend_word.new WordPair("", "");
+		gameInfo.recommend_word.read_word(word);
+		
+		/*设置界面*/
+		Message msg_word = new Message();
+		Bundle b = new Bundle();
+		b.putString(KEY_CIVIL_WORD, word.civil_word);
+		b.putString(KEY_TRICK_WORD, word.trick_word);
+		msg_word.what = MSG_FLAG_SET_RECOMMEND_WORD;
+		msg_word.setData(b);
+		mHandler.sendMessage(msg_word);
+		
+		return;
+	}
+	
+	/**
 	 * 启动游戏
 	 * */
-	void game_start(){
+	private void game_start(){
 		if(check_word_valid())				//检查是否输入了词汇
 		{
 			/* 设置游戏信息 */
@@ -182,7 +267,7 @@ public class ActivitySetWord extends Activity{
 				public void run() {
 					/*显示进度条*/
 					Message msg_open = new Message();
-					msg_open.what = MSG_FLAG_OPEN_PROGRESS_BAR;
+					msg_open.what = MSG_FLAG_OPEN_PROGRESS_BAR_SEND;
 					mHandler.sendMessage(msg_open);
 					
 					/*发出词汇*/
@@ -213,7 +298,7 @@ public class ActivitySetWord extends Activity{
 					
 					/*关闭进度条*/
 					Message msg_close = new Message();
-					msg_close.what = MSG_FLAG_CLOSE_PROGRESS_BAR;
+					msg_close.what = MSG_FLAG_CLOSE_PROGRESS_BAR_SEND;
 					mHandler.sendMessage(msg_close);
 				}
 			};
@@ -230,23 +315,50 @@ public class ActivitySetWord extends Activity{
 	private void handler_msg(Message msg){
 		switch(msg.what)
 		{
-	        case MSG_FLAG_OPEN_PROGRESS_BAR:
+			case MSG_FLAG_NONE:		//什么都不做
+				break;
+				
+	        case MSG_FLAG_OPEN_PROGRESS_BAR_SEND:
 	        	/*弹出进度条提示*/
-	    		mProgDialog = new ProgressDialog(this);
-	    		mProgDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-	    		mProgDialog.setMessage(getString(R.string.hint_send_words));
-	    		mProgDialog.setCancelable(true);
-	    		mProgDialog.show();
+	    		mProgDialog_send = new ProgressDialog(this);
+	    		mProgDialog_send.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+	    		mProgDialog_send.setMessage(getString(R.string.hint_send_words));
+	    		mProgDialog_send.setCancelable(true);
+	    		mProgDialog_send.show();
+	        	break;
+	        
+	        case MSG_FLAG_CLOSE_PROGRESS_BAR_SEND:
+	        	/*关闭进度条*/
+	        	mProgDialog_send.dismiss();
 	        	break;
 	        	
-	        case MSG_FLAG_CLOSE_PROGRESS_BAR:
+	        case MSG_FLAG_OPEN_PROGRESS_BAR_READ:
+	        	/*弹出进度条提示*/
+	    		mProgDialog_read = new ProgressDialog(this);
+	    		mProgDialog_read.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+	    		mProgDialog_read.setMessage(getString(R.string.hint_read_recommend_word));
+	    		mProgDialog_read.setCancelable(true);
+	    		mProgDialog_read.show();
+	        	break;
+	        
+	        case MSG_FLAG_CLOSE_PROGRESS_BAR_READ:
 	        	/*关闭进度条*/
-				mProgDialog.dismiss();
+	        	mProgDialog_read.dismiss();
 	        	break;
 	        
 	        case MSG_FLAG_SEND_WORD_OK:		//词汇成功发出，则启动游戏界面
 	        	Intent i = new Intent(this, ActivityGameView.class);
 	        	startActivity(i);
+	        	break;
+	        
+	        case MSG_FLAG_SET_RECOMMEND_WORD:		//设置推荐词汇
+	        	//读取参数
+	        	Bundle b = msg.getData();
+	        	String civil_word = b.getString(KEY_CIVIL_WORD);
+	        	String trick_wodd = b.getString(KEY_TRICK_WORD);
+	        	//设置界面元素
+	        	text_civil_word.setText(civil_word);
+	        	text_trick_word.setText(trick_wodd);
 	        	break;
 	        	
 	        case MSG_FLAG_NETWORK_ERR:

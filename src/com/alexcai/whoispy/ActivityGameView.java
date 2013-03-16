@@ -87,8 +87,6 @@ public class ActivityGameView extends ListActivity{
 			};
 		};
 		
-		Log.d(TAG, "onCreate, this : " + this);
-		
 		/*读取游戏信息*/
 		AppGameInfos infos = (AppGameInfos)(getApplicationContext());
 		gameInfo = infos.game;
@@ -204,8 +202,6 @@ public class ActivityGameView extends ListActivity{
 						getResources().getString(R.string.seting_player_mark_out)
 					};
 			}
-			
-			Log.d(TAG, "player_id : " + player_id);
 			
 			AlertDialog.Builder dlg = new AlertDialog.Builder(this);
 			dlg.setTitle(R.string.player_setting);
