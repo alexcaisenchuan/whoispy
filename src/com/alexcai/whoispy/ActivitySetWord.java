@@ -28,11 +28,12 @@ public class ActivitySetWord extends Activity{
 	private static final int MSG_FLAG_CLOSE_PROGRESS_BAR_SEND 	= 3;	//发出词汇提示
 	private static final int MSG_FLAG_OPEN_PROGRESS_BAR_READ 	= 4;	//读取推荐词汇提示
 	private static final int MSG_FLAG_CLOSE_PROGRESS_BAR_READ	= 5;	//读取推荐词汇提示
-	private static final int MSG_FLAG_NETWORK_ERR 				= 6;
-	private static final int MSG_FLAG_NETWORK_TIMEOUT 			= 7;
+	private static final int MSG_FLAG_NETWORK_ERR 				= 6;	//网络错误
+	private static final int MSG_FLAG_NETWORK_TIMEOUT 			= 7;	//网络超时
 	private static final int MSG_FLAG_COMMON_ERR				= 8;	//未知错误
 	private static final int MSG_FLAG_SET_RECOMMEND_WORD		= 9;	//设置词汇
 	private static final int MSG_FLAG_NONE						= 10;	//什么都不做
+	private static final int MSG_FLAG_NOT_LOGIN					= 11;	//玩家未登录
 	/*Bundle Key*/
 	private static final String KEY_CIVIL_WORD = "civil_word";
 	private static final String KEY_TRICK_WORD = "trick_word";
@@ -289,6 +290,10 @@ public class ActivitySetWord extends Activity{
 							msg.what = MSG_FLAG_NETWORK_TIMEOUT;
 							break;
 							
+						case Err.ERR_NOT_LOGIN:
+							msg.what = MSG_FLAG_NOT_LOGIN;
+							break;
+							
 						case Err.ERR_COMMON:
 						default:
 							msg.what = MSG_FLAG_COMMON_ERR;
@@ -367,6 +372,10 @@ public class ActivitySetWord extends Activity{
 	        	
 	        case MSG_FLAG_NETWORK_TIMEOUT:
 	        	Toast.makeText(this, getString(R.string.hint_network_timeout), Toast.LENGTH_SHORT).show();
+	        	break;
+	        	
+	        case MSG_FLAG_NOT_LOGIN:
+	        	Toast.makeText(this, getString(R.string.hint_not_login), Toast.LENGTH_SHORT).show();
 	        	break;
 	        	
 	        case MSG_FLAG_COMMON_ERR:

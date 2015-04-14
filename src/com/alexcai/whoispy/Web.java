@@ -62,6 +62,7 @@ public class Web {
 	final static String CODE_ERR_PHONE_EXIST = "err_phone_exist";
 	final static String CODE_ERR_PASSWD = "err_passwd";
 	final static String CODE_ERR_USER_OFFLINE = "err_user_offline";
+	final static String CODE_ERR_NOT_LOGIN = "err_not_login";
 	/*Õ¯“≥µÿ÷∑*/
 	final static String WEB_URL_WORDS = "http://caisenchuan.web-184.com/whoispy/words.php";		//words.php
 	final static String WEB_URL_USERS = "http://caisenchuan.web-184.com/whoispy/users.php";		//users.php

@@ -32,6 +32,7 @@ import org.xmlpull.v1.XmlSerializer;
 import com.alexcai.whoispy.Err.ExceptionCommon;
 import com.alexcai.whoispy.Err.ExceptionNetwork;
 import com.alexcai.whoispy.Err.ExceptionNetworkTimeOut;
+import com.alexcai.whoispy.Err.ExceptionNotLogin;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -416,9 +417,10 @@ class User {
 	 * @throws ExceptionNetwork 
 	 * @throws ExceptionNetworkTimeOut 
 	 * @throws ExceptionCommon 
+	 * @throws ExceptionNotLogin 
 	 * */
 	public ArrayList<OneWord> get_all_word() 
-		throws ExceptionNetwork, ExceptionNetworkTimeOut, ExceptionCommon
+		throws ExceptionNetwork, ExceptionNetworkTimeOut, ExceptionCommon, ExceptionNotLogin
 	{
 		ArrayList<OneWord> word_list = new ArrayList<OneWord>();
 		int ret = Word.search(curr_session, word_list);
@@ -433,6 +435,9 @@ class User {
 			
 			case Err.ERR_NETWORK_TIMEOUT:
 				throw new Err.ExceptionNetworkTimeOut();
+				
+			case Err.ERR_NOT_LOGIN:
+				throw new Err.ExceptionNotLogin();
 				
 			case Err.ERR_COMMON:
 			default:
@@ -648,7 +653,15 @@ class Word {
 				}
 				else									//Ìí¼ÓÊ§°Ü
 				{
-					ret = Err.ERR_COMMON;
+					String err_code = json.getString(Web.FLAG_ERR_CODE);
+					if(err_code.equals(Web.CODE_ERR_NOT_LOGIN))		//ÈôÃ»ÓÐµÇÂ¼
+					{
+						ret = Err.ERR_NOT_LOGIN;
+					}
+					else
+					{
+						ret = Err.ERR_COMMON;
+					}
 				}
 			}
 		}
@@ -717,7 +730,15 @@ class Word {
 				}
 				else									//²éÑ¯Ê§°Ü
 				{
-					ret = Err.ERR_COMMON;
+					String err_code = json.getString(Web.FLAG_ERR_CODE);
+					if(err_code.equals(Web.CODE_ERR_NOT_LOGIN))		//Î´µÇÂ¼
+					{
+						ret = Err.ERR_NOT_LOGIN;
+					}
+					else
+					{
+						ret = Err.ERR_COMMON;
+					}
 				}
 			}
 		}

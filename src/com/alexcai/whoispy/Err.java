@@ -19,6 +19,7 @@ public class Err {
 	final static int ERR_IO 				= -8;	//IO操作错误，例如文件读写等
 	final static int ERR_FILE_NOT_FOUND 	= -9;	//找不到文件
 	final static int ERR_PLAYER_INVALID 	= -10;	//无效玩家
+	final static int ERR_NOT_LOGIN			= -11;	//玩家未登录
 
 	/**
 	 * 通用错误异常
@@ -52,6 +53,18 @@ public class Err {
 		private static final long serialVersionUID = 1L;
 
 		public ExceptionNetwork() {
+			super();
+		}
+	}
+	
+	/**
+	 * 用户未登录异常
+	 * */
+	static class ExceptionNotLogin extends Exception {
+
+		private static final long serialVersionUID = 1L;
+
+		public ExceptionNotLogin() {
 			super();
 		}
 	}

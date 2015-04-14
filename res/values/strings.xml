@@ -25,6 +25,7 @@
     <string name="hint_send_word_success">成功发出词汇！</string>
     <string name="hint_web_site">(未安装应用的玩家可以登录zhuoguiyouxi.com参与游戏)</string>
     <string name="hint_update">检测到更新版本，是否需要升级？</string>
+    <string name="hint_not_login">玩家未登录或超时，请重新登录！</string>
     
     <string name="button_ok">确认</string>
     <string name="button_cancel">取消</string>

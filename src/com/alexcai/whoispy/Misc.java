@@ -24,7 +24,7 @@ public class Misc {
 	 * @return true - 合法手机号; false - 非法手机号；
 	 * */
 	public static boolean isMobileNOStrict(String mobiles){
-		Pattern p = Pattern.compile("\\d{11}");		//11个数字
+		Pattern p = Pattern.compile("\\d{6,11}");		//6 ~ 11个数字
 		Matcher m = p.matcher(mobiles);
 		return m.matches();
 	}

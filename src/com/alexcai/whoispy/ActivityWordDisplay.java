@@ -38,6 +38,7 @@ public class ActivityWordDisplay extends ListActivity{
 	private static final int MSG_FLAG_NETWORK_ERR 			= 4;
 	private static final int MSG_FLAG_NETWORK_TIMEOUT 		= 5;
 	private static final int MSG_FLAG_COMMON_ERR			= 6;	//Î´Öª´íÎó
+	private static final int MSG_FLAG_NOT_LOGIN				= 7;	//Íæ¼ÒÎ´µÇÂ¼
 	
 	/*--------------------------
 	 * ÊôÐÔ
@@ -203,6 +204,14 @@ public class ActivityWordDisplay extends ListActivity{
 			
 			Log.d(TAG, "Exception : " + e.toString());
 		}
+		catch(Err.ExceptionNotLogin e)
+		{
+			Message msg = new Message();
+			msg.what = MSG_FLAG_NOT_LOGIN;
+			mHandler.sendMessage(msg);
+			
+			Log.d(TAG, "Exception : " + e.toString());
+		}
 		catch(Err.ExceptionCommon e)
 		{
 			Message msg = new Message();
@@ -341,6 +350,10 @@ public class ActivityWordDisplay extends ListActivity{
 	        	
 	        case MSG_FLAG_NETWORK_TIMEOUT:
 	        	Toast.makeText(ActivityWordDisplay.this, getString(R.string.hint_network_timeout), Toast.LENGTH_SHORT).show();
+	        	break;
+	        	
+	        case MSG_FLAG_NOT_LOGIN:
+	        	Toast.makeText(ActivityWordDisplay.this, getString(R.string.hint_not_login), Toast.LENGTH_SHORT).show();
 	        	break;
 	        	
 	        case MSG_FLAG_COMMON_ERR:
